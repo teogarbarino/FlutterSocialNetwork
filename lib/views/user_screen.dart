@@ -64,7 +64,7 @@ class userpageState extends State<userpage> {
                         GestureDetector(
                           onTap: _pickImage,
                           child: CircleAvatar(
-                            child: Image.memory(base64Decode(img)),
+                            backgroundImage: MemoryImage(base64Decode(img)),
                           ),
                         ),
                       ],
@@ -96,7 +96,7 @@ class userpageState extends State<userpage> {
     nameController.text = user.name;
 
     img = user.photo!;
-    print(img);
+
     setState(() {
       dataready = true;
     });
