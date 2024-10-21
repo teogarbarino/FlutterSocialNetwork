@@ -79,7 +79,7 @@ class _LoadingPageState extends State<LoadingPage> {
             child: const Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-                // rajouter le  logo 
+                // rajouter le  logo
                 SizedBox(height: 20),
                 SizedBox(
                   width: 240,
@@ -94,7 +94,6 @@ class _LoadingPageState extends State<LoadingPage> {
   }
 
   passToOtherScreen() async {
-    await PersistanceHandler().delAccessToken();
     String refreshToken = await PersistanceHandler().getAccessToken();
     if (refreshToken != "notFound") {
       print("avant");

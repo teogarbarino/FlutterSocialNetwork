@@ -3,8 +3,10 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 import 'package:social667/controllers/json_handler.dart';
 import 'package:social667/controllers/persistance_handler.dart';
+import 'package:social667/controllers/provider/user_provider.dart';
 import 'package:social667/controllers/service/https_service.dart';
 import 'package:social667/global/route.dart';
 import 'package:social667/models/user.dart';
@@ -20,6 +22,7 @@ class RegistrationPageState extends State<RegistrationPage> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   File? _image;
+  late UserProvider pUser;
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _nameController = TextEditingController();
 
@@ -38,6 +41,12 @@ class RegistrationPageState extends State<RegistrationPage> {
     if (image == null) return null;
     final bytes = await image.readAsBytes();
     return base64Encode(bytes);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    pUser = Provider.of<UserProvider>(context, listen: false);
   }
 
   @override
@@ -97,15 +106,6 @@ class RegistrationPageState extends State<RegistrationPage> {
                 child: TextFormField(
                   controller: _nameController,
                   decoration: const InputDecoration(labelText: 'Pseudonyme'),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your email';
-                    } else if (!RegExp(r'^[^@]+@[^@]+\.[^@]+')
-                        .hasMatch(value)) {
-                      return 'Please enter a valid email address';
-                    }
-                    return null;
-                  },
                 ),
               ),
               const SizedBox(
@@ -158,21 +158,27 @@ class RegistrationPageState extends State<RegistrationPage> {
         password: _passwordController.text,
         name: _nameController.text,
         photo: base64Image);
+
     final jsonString = jsonEncode(userToSend);
 
     var response = await HttpService()
         .makePostRequestWithoutToken(uPostRegister, jsonString);
+    Map<String, dynamic> decodedResponse = jsonDecode(response.body);
+    User userToSave = User.fromJson(decodedResponse);
+    pUser.updateUser(userToSave);
 
     if (response.statusCode == 201) {
       var responseLogin = await HttpService()
           .makePostRequestWithoutToken(uPostLogin, jsonString);
+
       if (responseLogin.statusCode == 200) {
         Map<String, dynamic> decodedResponse = jsonDecode(responseLogin.body);
 
         await PersistanceHandler()
             .setAccessToken(decodedResponse['accessToken']);
 
-        await PersistanceHandler().setPhotoToken(decodedResponse['photo']);
+        await PersistanceHandler()
+            .setAccessToken(decodedResponse['accessToken']);
 
         Navigator.push(
             context, MaterialPageRoute(builder: (context) => MainPage()));
