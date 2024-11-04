@@ -1,6 +1,8 @@
+import 'user.dart';
+
 class Post {
   final String id; // Assuming your backend provides an ID for each post
-  final String authorId;
+  final User author;
   final String title;
   final String description;
   final DateTime createdAt;
@@ -9,7 +11,7 @@ class Post {
 
   Post({
     required this.id,
-    required this.authorId,
+    required this.author,
     required this.title,
     required this.description,
     required this.createdAt,
@@ -19,7 +21,7 @@ class Post {
 
   factory Post.fromJson(Map<String, dynamic> json) => Post(
         id: json['_id'] ?? json['id'], // Handle potential variations in ID key
-        authorId: json['author'],
+        author: User.fromJson(json['author']),
         title: json['title'],
         description: json['description'],
         createdAt: DateTime.parse(
@@ -32,7 +34,7 @@ class Post {
 
   Map<String, dynamic> toJson() => {
         'id': id,
-        'author': authorId,
+        'author': author,
         'title': title,
         'description': description,
         'createdAt': createdAt.toIso8601String(),
@@ -44,7 +46,7 @@ class Post {
 class Message {
   final String? content;
   final DateTime? sentAt;
-  final String author;
+  final User author;
 
   Message({
     required this.content,
@@ -53,7 +55,7 @@ class Message {
   });
 
   factory Message.fromJson(Map<String, dynamic> json) => Message(
-        author: json['author'],
+        author: User.fromJson(json['author']),
         content: json['content'],
         sentAt: DateTime.parse(
             json['sentAt']), // Assuming backend sends ISO 8601 format

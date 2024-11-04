@@ -7,6 +7,7 @@ class User {
   String? photo;
   final List<String>? posts;
   final List<String>? feed;
+  final String id;
 
   User({
     required this.name,
@@ -15,11 +16,13 @@ class User {
     this.photo,
     this.posts,
     this.feed,
+    required this.id,
   });
 
   // Factory constructor to create a User from a JSON object
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
+      id: json['id'] as String,
       name: json['name'] ?? '',
       email: json['email'] ?? '',
       password: json['password'] ?? '',
@@ -43,6 +46,6 @@ class User {
 
   @override
   String toString() {
-    return jsonEncode(this.toJson());
+    return jsonEncode(toJson());
   }
 }

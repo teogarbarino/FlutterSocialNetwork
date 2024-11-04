@@ -26,4 +26,47 @@ class JSONHandler {
     };
     return jsonEncode(parameters);
   }
+
+  Future<String> userModify(String name, String photo) async {
+    Map<String, String> parameters = {
+      'username': name,
+      'image': photo,
+    };
+    return jsonEncode(parameters);
+  }
+
+  Future<String> createPost({
+    required String title,
+    required String description,
+    String? image,
+    double? latitude,
+    double? longitude,
+  }) async {
+    Map<String, dynamic> parameters = {
+      'title': title,
+      'description': description,
+    };
+
+    if (image != null) {
+      parameters['image'] = image;
+    }
+
+    if (latitude != null && longitude != null) {
+      parameters['lat'] = latitude.toString();
+      parameters['lon'] = longitude.toString();
+    }
+
+    return jsonEncode(parameters);
+  }
+
+  Future<String> sendMessage({
+    required String postId,
+    required String content,
+  }) async {
+    Map<String, String> parameters = {
+      'postId': postId,
+      'content': content,
+    };
+    return jsonEncode(parameters);
+  }
 }

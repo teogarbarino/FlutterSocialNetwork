@@ -157,7 +157,7 @@ class RegistrationPageState extends State<RegistrationPage> {
         email: _emailController.text,
         password: _passwordController.text,
         name: _nameController.text,
-        photo: base64Image);
+        photo: base64Image, id: '');
 
     final jsonString = jsonEncode(userToSend);
 

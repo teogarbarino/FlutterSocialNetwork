@@ -5,8 +5,12 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:social667/controllers/json_handler.dart';
 import 'package:social667/controllers/provider/user_provider.dart';
+import 'package:social667/controllers/service/https_service.dart';
+import 'package:social667/global/route.dart';
 import 'package:social667/models/user.dart';
+import 'package:social667/utils/dialog_boxes.dart';
 
 class userpage extends StatefulWidget {
   @override
@@ -18,7 +22,7 @@ class userpageState extends State<userpage> {
   late User user;
   bool dataready = false;
   late var img;
-
+  String newImgProfile = "";
   TextEditingController nameController = TextEditingController();
 
   @override
@@ -36,6 +40,8 @@ class userpageState extends State<userpage> {
       setState(() {
         img = File(image.path);
       });
+
+      newImgProfile = (await _encodeImageToBase64(img))!;
     }
   }
 
@@ -61,12 +67,21 @@ class userpageState extends State<userpage> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        GestureDetector(
-                          onTap: _pickImage,
-                          child: CircleAvatar(
-                            backgroundImage: MemoryImage(base64Decode(img)),
-                          ),
-                        ),
+                        (newImgProfile != "")
+                            ? GestureDetector(
+                                onTap: _pickImage,
+                                child: CircleAvatar(
+                                  backgroundImage:
+                                      MemoryImage(base64Decode(newImgProfile)),
+                                ),
+                              )
+                            : GestureDetector(
+                                onTap: _pickImage,
+                                child: CircleAvatar(
+                                  backgroundImage: MemoryImage(
+                                      base64Decode(pUser.getUser.photo!)),
+                                ),
+                              ),
                       ],
                     ),
                     const SizedBox(height: 16.0),
@@ -80,6 +95,12 @@ class userpageState extends State<userpage> {
                       ),
                     ),
                     const SizedBox(height: 8.0),
+                    Center(
+                      child: ElevatedButton(
+                        onPressed: userModify,
+                        child: const Text('Save Changes'),
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -94,11 +115,31 @@ class userpageState extends State<userpage> {
     user = pUser.getUser;
 
     nameController.text = user.name;
-
-    img = user.photo!;
+    img = user.photo;
 
     setState(() {
       dataready = true;
     });
+  }
+
+  void userModify() async {
+    var body =
+        await JSONHandler().userModify(nameController.text, newImgProfile);
+
+    var response = await HttpService().makePUTRequestWithToken(uPutUser, body);
+
+    if (response.statusCode == 200) {
+      if (!mounted) return;
+      showPopUp("Succès", "Vos modifictions ont bien était pris en compte",
+          "ok", "", context);
+    } else {
+      if (!mounted) return;
+      showPopUp(
+          "Erreur",
+          "Une erreur s'est produite lors de la mise à jour de vos informations. Veuillez réessayer.",
+          "ok",
+          "",
+          context);
+    }
   }
 }

@@ -6,7 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:social667/controllers/provider/index_provider.dart';
-import 'package:social667/utils/appBar.dart';
+import 'package:social667/controllers/provider/user_provider.dart';
+import 'package:social667/utils/appbar.dart';
 import 'package:social667/utils/dialog_boxes.dart';
 import 'package:social667/views/feed_screen.dart'; // Pour exit l'application
 
@@ -23,8 +24,9 @@ class MainPage extends StatelessWidget {
     // Récupérer l'index du screen provider
     final IndexProvider screenindexprovider =
         Provider.of<IndexProvider>(context);
-    int currentScreenIndex = screenindexprovider.getScreenIndex;
 
+    final pUser = Provider.of<UserProvider>(context, listen: false);
+    int currentScreenIndex = screenindexprovider.getScreenIndex;
     double widthScreen = MediaQuery.of(context).size.width;
 
     return WillPopScope(
@@ -48,7 +50,7 @@ class MainPage extends StatelessWidget {
         },
         child: Scaffold(
           // Définition appbar
-          appBar: appBarAccount(widthScreen, context),
+          appBar: appBarAccount(widthScreen, context, pUser.getUser.photo!),
           // Def du BottomNavigationBar
           // drawer: const Menu(),
           bottomNavigationBar: BottomNavigationBar(
@@ -62,22 +64,16 @@ class MainPage extends StatelessWidget {
             // Liste des items du BottomNavigationBar
             items: [
               BottomNavigationBarItem(
-                label: "onglet 1",
+                label: "Feed des posts",
                 icon: Icon((currentScreenIndex == 0)
-                    ? Icons.percent
-                    : Icons.percent_outlined),
+                    ? Icons.newspaper
+                    : Icons.newspaper_outlined),
               ),
               BottomNavigationBarItem(
-                label: "onglet 2",
+                label: "Message",
                 icon: Icon((currentScreenIndex == 1)
-                    ? Icons.store
-                    : Icons.store_mall_directory_outlined),
-              ),
-              BottomNavigationBarItem(
-                label: "onglet 3",
-                icon: Icon((currentScreenIndex == 3)
-                    ? Icons.emoji_events
-                    : Icons.emoji_events_outlined),
+                    ? Icons.message
+                    : Icons.message_outlined),
               ),
             ],
           ),

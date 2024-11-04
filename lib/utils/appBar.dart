@@ -1,41 +1,32 @@
-import 'package:flutter/material.dart';
+import 'dart:convert';
 
-AppBar appBarAccount(widthScreen, context) {
+import 'package:flutter/material.dart';
+import 'package:social667/views/post_screen.dart';
+
+AppBar appBarAccount(widthScreen, context, String providerImage) {
   return AppBar(
     centerTitle: true,
     backgroundColor: Colors.transparent,
     elevation: 0,
     leading: Padding(
       padding: const EdgeInsets.only(top: 10),
-      child: IconButton(
-        icon: const Icon(
-          Icons.account_circle_rounded,
-          color: Colors.black,
-        ),
-        onPressed: () async {
-          /*
-          User user = await PersistanceHandler().getUserInformation();
-          if (user.id == 0) {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const LoginPage(shouldGoMP: false)));
-          } else {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => const ProfilePage()));
-          } */
-        },
+      child: GestureDetector(
+        child: CircleAvatar(
+            radius: 25,
+            backgroundImage: MemoryImage(base64Decode(providerImage))),
+        onTap: () => Navigator.push(context,
+            MaterialPageRoute(builder: (context) => const PostScreen())),
       ),
     ),
     title: const Padding(
       padding: EdgeInsets.only(top: 5),
-      /*
-      child: Image(
-        height: 50,
-        width: 100,
-        image: AssetImage('assets/Logos/logo.png'),
-      ),*/
     ),
+    actions: [
+      IconButton(
+        icon: const Icon(Icons.add),
+        onPressed: () {},
+      ),
+    ],
     bottom: PreferredSize(
       preferredSize: Size(widthScreen, 15),
       child: Row(

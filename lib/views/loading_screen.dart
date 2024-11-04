@@ -96,15 +96,8 @@ class _LoadingPageState extends State<LoadingPage> {
   passToOtherScreen() async {
     String refreshToken = await PersistanceHandler().getAccessToken();
     if (refreshToken != "notFound") {
-      print("avant");
       Response response =
           await HttpService().makePostRequestWithToken(uPostLogin, "");
-      print("aprés");
-
-      print(refreshToken);
-
-      // Et qu'il est d'actualité
-      print(response.statusCode);
       if (response.statusCode == 200) {
         if (context.mounted) {
           Navigator.push(
@@ -112,7 +105,8 @@ class _LoadingPageState extends State<LoadingPage> {
         }
       }
     } else {
-      User resetedUser = User(email: '', name: '', password: '', photo: '');
+      User resetedUser =
+          User(email: '', name: '', password: '', photo: '', id: "");
 
       pUser.updateUser(resetedUser);
 

@@ -15,14 +15,4 @@ class PersistanceHandler {
     SharedPreferences prefs = await SharedPreferences.getInstance(); // Init
     prefs.remove('accessToken');
   }
-
-  Future<void> setPhotoToken(String accessToken) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance(); // Init
-    prefs.setString('photo', accessToken);
-  }
-
-  Future<String> getPhotoToken() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance(); // Init
-    return prefs.getString('photo') ?? "notFound";
-  }
 }

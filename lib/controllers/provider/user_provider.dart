@@ -8,7 +8,7 @@ import 'package:social667/models/user.dart';
 
 class UserProvider extends ChangeNotifier {
   // Index par défaut
-  User user = User(name: '', email: '', password: '', photo: "");
+  User user = User(name: '', email: '', password: '', photo: "", id: '');
 
   User get getUser {
     return user;
